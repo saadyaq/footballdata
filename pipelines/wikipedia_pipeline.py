@@ -100,7 +100,7 @@ from functools import lru_cache
 
 @lru_cache(maxsize=1000)
 def get_lat_long(country,city):
-    geolocator=Nominatim(user_agent='geoapifoot')
+    geolocator=Nominatim(user_agent='geoapifoot',timeout=10)
     location=geolocator.geocode(f'{city},{country}')
     try:
         location = geolocator.geocode(f'{city},{country}')
@@ -142,11 +142,7 @@ def write_wikipedia_data(**kwargs):
     data=pd.DataFrame(data)
 
     file_name=("stadium_cleaned_"+str(datetime.now().date())+"_"+ str(datetime.now().time()).replace(":","_")+".csv")
-    # Define the output file path in the /tmp directory
-    output_file = os.path.join("/tmp", file_name)
 
-    # Save the DataFrame to the output file
-    data.to_csv(output_file, index=False)
-
-    print(f"File saved successfully to: {output_file}")
-    stadium_cleaned_2025-01-11_19_09_20.624089.csv
+    data.to_csv('abfs://footballdata@footballdataengineering.dfs.core.windows.net/data/'+file_name
+                ,storage_options={'account_key': 'acces_key'},index=False)
+    
